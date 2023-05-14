@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import kotlinx.coroutines.delay
 
 @Composable
@@ -77,17 +78,41 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
         modifier = modifier
             .graphicsLayer(alpha = alpha)
             .background(Color.Green.copy(alpha = 0.2f))
-            .border(width = 0.5.dp, color = Color.Green)
-            .onSizeChanged {
-                size = it
-            },
-        contentAlignment = Alignment.Center,
     ) {
-        Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        ConstraintLayout(modifier = modifier) {
+            val (icon, message) = createRefs()
+
             AnimatedVisibility(
+                modifier = Modifier
+                    .constrainAs(message) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .onSizeChanged {
+                        size = it
+                    },
+                visible = playSuccess,
+                enter = fadeIn(animationSpec = tween(durationMillis = 1000, delayMillis = 500)),
+                exit = fadeOut(),
+            ) {
+                Text(
+                    text = "You're all set!",
+                    style = TextStyle(
+                        color = Color.Green,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                )
+            }
+
+            AnimatedVisibility(
+                modifier = Modifier.constrainAs(icon) {
+                    top.linkTo(message.top)
+                    end.linkTo(message.start, margin = 8.dp)
+                    bottom.linkTo(message.bottom)
+                },
                 visible = playSuccess,
                 enter = slideInHorizontally(
                     animationSpec = tween(
@@ -95,7 +120,7 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
                         delayMillis = 700
                     )
                 ) { fullWidth ->
-                    size.width / 2
+                    size.width / 2 + fullWidth
                 } + fadeIn(),
                 exit = slideOutHorizontally(animationSpec = spring(stiffness = Spring.StiffnessHigh)) {
                     // Overwrites the ending position of the slide-out to 200 (pixels) to the right
@@ -110,20 +135,7 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
             }
         }
 
-        AnimatedVisibility(
-            visible = playSuccess,
-            enter = fadeIn(animationSpec = tween(durationMillis = 1000, delayMillis = 500)),
-            exit = fadeOut(),
-        ) {
-            Text(
-                text = "You're all set!",
-                style = TextStyle(
-                    color = Color.Green,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
-                )
-            )
-        }
+
     }
 }
 
