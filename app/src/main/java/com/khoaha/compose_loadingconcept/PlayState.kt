@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -74,7 +76,7 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
     Box(
         modifier = modifier
             .graphicsLayer(alpha = alpha)
-            .background(Color.Green.copy(alpha = 0.2f))
+            .background(color = colorResource(id = R.color.bg_success))
     ) {
         ConstraintLayout(modifier = modifier) {
             val (icon, message) = createRefs()
@@ -97,8 +99,8 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
                 Text(
                     text = "You're all set!",
                     style = TextStyle(
-                        color = Color.Green,
-                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.text_success),
+                        fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
                     )
                 )
@@ -125,9 +127,9 @@ private fun SuccessState(modifier: Modifier, playSuccess: Boolean, alpha: Float)
                 } + fadeOut(),
             ) {
                 Icon(
-                    imageVector = Icons.Filled.CheckCircle,
+                    painter = painterResource(id = R.drawable.ic_success),
                     contentDescription = "Success icon",
-                    tint = Color.Green
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -141,9 +143,13 @@ private fun LoadingState(modifier: Modifier, alpha: Float) {
     Box(
         modifier = modifier
             .graphicsLayer(alpha = alpha)
-            .background(Color.Blue),
+            .background(color = colorResource(id = R.color.bg_loading)),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = Color.White)
+        Icon(
+            painter = painterResource(id = R.drawable.ic_loading),
+            contentDescription = "Loading icon",
+            tint = Color.White
+        )
     }
 }
